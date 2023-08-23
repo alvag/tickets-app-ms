@@ -20,7 +20,7 @@ export const signUp = async ( req: Request, res: Response, next: NextFunction ) 
         const { email, password } = req.body;
 
         console.log( 'Creating a user...' );
-        
+
         res.json( {
             email,
             password,
