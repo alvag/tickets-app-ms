@@ -1,5 +1,6 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { validationResult } from 'express-validator';
+import { RequestValidationError } from '../errors/request-validation-error';
 
 
 export const getCurrentUser = async ( req: Request, res: Response ) => {
@@ -8,21 +9,25 @@ export const getCurrentUser = async ( req: Request, res: Response ) => {
     } );
 };
 
-export const signUp = async ( req: Request, res: Response ) => {
-    const errors = validationResult( req );
+export const signUp = async ( req: Request, res: Response, next: NextFunction ) => {
+    try {
+        const errors = validationResult( req );
 
-    if ( !errors.isEmpty() ) {
-        return res.status( 400 ).json( {
-            errors: errors.array(),
+        if ( !errors.isEmpty() ) {
+            throw new RequestValidationError( errors.array() );
+        }
+
+        const { email, password } = req.body;
+
+        console.log( 'Creating a user...' );
+        
+        res.json( {
+            email,
+            password,
         } );
+    } catch ( e ) {
+        next( e );
     }
-
-    const { email, password } = req.body;
-
-    res.json( {
-        email,
-        password,
-    } );
 };
 
 export const signIn = async ( req: Request, res: Response ) => {
