@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { RequestValidationError } from '../errors/request-validation-error';
+import { User } from '../models/user.model';
 
 
 export const getCurrentUser = async ( req: Request, res: Response ) => {
@@ -19,12 +20,10 @@ export const signUp = async ( req: Request, res: Response, next: NextFunction ) 
 
         const { email, password } = req.body;
 
-        console.log( 'Creating a user...' );
+        const user = User.build( { email, password } );
+        await user.save();
 
-        res.json( {
-            email,
-            password,
-        } );
+        res.status( 201 ).json( user );
     } catch ( e ) {
         next( e );
     }
@@ -41,3 +40,5 @@ export const signOut = async ( req: Request, res: Response ) => {
         message: 'signOut',
     } );
 };
+
+

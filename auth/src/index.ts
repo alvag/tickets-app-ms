@@ -1,8 +1,11 @@
+import dotenv from 'dotenv';
 import express from 'express';
 import appRoutes from './routes';
 import { errorHandler } from './middlewares/error-handler.middleware';
 import { NotFoundError } from './errors/not-found-error';
 import { dbConnection } from './config/db';
+
+dotenv.config();
 
 const app = express();
 app.use( express.json() );
