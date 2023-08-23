@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { RequestValidationError } from '../errors/request-validation-error';
 import { User } from '../models/user.model';
+import { Jwt } from '../helpers';
 
 
 export const getCurrentUser = async ( req: Request, res: Response ) => {
@@ -22,6 +23,12 @@ export const signUp = async ( req: Request, res: Response, next: NextFunction ) 
 
         const user = User.build( { email, password } );
         await user.save();
+
+        const token = Jwt.create( user._id, email );
+
+        req.session = {
+            jwt: token,
+        };
 
         res.status( 201 ).json( user );
     } catch ( e ) {
