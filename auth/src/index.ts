@@ -2,6 +2,7 @@ import express from 'express';
 import appRoutes from './routes';
 import { errorHandler } from './middlewares/error-handler.middleware';
 import { NotFoundError } from './errors/not-found-error';
+import { dbConnection } from './config/db';
 
 const app = express();
 app.use( express.json() );
@@ -14,7 +15,12 @@ app.all( '*', ( req, res, next ) => {
 
 app.use( errorHandler );
 
-
-app.listen( 3000, () => {
-    console.log( 'Listening on port 3000!' );
-} );
+dbConnection()
+    .then( () => {
+        app.listen( 3000, () => {
+            console.log( 'Server is running on port 3000' );
+        } );
+    } )
+    .catch( ( error ) => {
+        console.log( `Error al conectar a la base de datos: ${ error }` );
+    } );
