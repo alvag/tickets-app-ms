@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { getCurrentUser, signIn, signOut, signUp } from '../controllers/user.controller';
 import { body } from 'express-validator';
+import { validateRequest } from '../middlewares';
 
 const router = Router();
 
@@ -12,11 +13,17 @@ router.post( '/signup', [
             min: 4,
             max: 20,
         } ).withMessage( 'Password must be between 4 and 20 characters' ),
+        validateRequest,
     ],
     signUp,
 );
 
-router.post( '/signin', signIn );
+router.post( '/signin', [
+        body( 'email' ).isEmail().withMessage( 'Email must be valid' ),
+        body( 'password' ).trim().notEmpty().withMessage( 'Password is required' ),
+        validateRequest,
+    ], signIn,
+);
 
 router.post( '/signout', signOut );
 

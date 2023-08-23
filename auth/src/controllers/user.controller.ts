@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import { validationResult } from 'express-validator';
-import { RequestValidationError } from '../errors/request-validation-error';
 import { User } from '../models/user.model';
-import { Jwt } from '../helpers';
+import { Jwt, Password } from '../helpers';
+import { BadRequestError } from '../errors';
 
 
 export const getCurrentUser = async ( req: Request, res: Response ) => {
@@ -13,11 +12,6 @@ export const getCurrentUser = async ( req: Request, res: Response ) => {
 
 export const signUp = async ( req: Request, res: Response, next: NextFunction ) => {
     try {
-        const errors = validationResult( req );
-
-        if ( !errors.isEmpty() ) {
-            throw new RequestValidationError( errors.array() );
-        }
 
         const { email, password } = req.body;
 
@@ -36,10 +30,31 @@ export const signUp = async ( req: Request, res: Response, next: NextFunction ) 
     }
 };
 
-export const signIn = async ( req: Request, res: Response ) => {
-    res.json( {
-        message: 'signIn',
-    } );
+export const signIn = async ( req: Request, res: Response, next: NextFunction ) => {
+    try {
+        const { email, password } = req.body;
+
+        const user = await User.findOne( { email } );
+
+        if ( !user ) {
+            throw new BadRequestError( 'Invalid credentials' );
+        }
+
+        const isMatch = await Password.compare( user.password, password );
+        if ( !isMatch ) {
+            throw new BadRequestError( 'Invalid credentials' );
+        }
+
+        const token = Jwt.create( user._id, email );
+
+        req.session = {
+            jwt: token,
+        };
+
+        res.json( user );
+    } catch ( e ) {
+        next( e );
+    }
 };
 
 export const signOut = async ( req: Request, res: Response ) => {

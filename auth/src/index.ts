@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import cookieSession from 'cookie-session';
 import appRoutes from './routes';
-import { errorHandler } from './middlewares/error-handler.middleware';
+import { errorHandler } from './middlewares';
 import { NotFoundError } from './errors/not-found-error';
 import { dbConnection } from './config/db';
 
