@@ -1,13 +1,21 @@
 import { NextFunction, Request, Response } from 'express';
-import { User } from '../models/user.model';
+import { User } from '../models';
 import { Jwt, Password } from '../helpers';
 import { BadRequestError } from '../errors';
 
 
-export const getCurrentUser = async ( req: Request, res: Response ) => {
-    res.json( {
-        message: 'getCurrentUser',
-    } );
+export const getCurrentUser = async ( req: Request, res: Response, next: NextFunction ) => {
+    try {
+        if ( !req.session?.jwt ) {
+            return res.send( { currentUser: null } );
+        }
+
+        const { uid, email } = Jwt.verify( req.session.jwt );
+
+        res.json( { currentUser: { uid, email } } );
+    } catch ( e ) {
+        next( e );
+    }
 };
 
 export const signUp = async ( req: Request, res: Response, next: NextFunction ) => {

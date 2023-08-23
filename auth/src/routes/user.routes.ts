@@ -5,7 +5,7 @@ import { validateRequest } from '../middlewares';
 
 const router = Router();
 
-router.get( '/current-user', getCurrentUser );
+router.get( '/me', getCurrentUser );
 
 router.post( '/signup', [
         body( 'email' ).isEmail().withMessage( 'Email must be valid' ),

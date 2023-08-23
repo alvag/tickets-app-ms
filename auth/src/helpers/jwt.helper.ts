@@ -15,7 +15,7 @@ export class Jwt {
     static verify( token: string ) {
         try {
             const payload = jwt.verify( token, process.env.TOKEN_SECRET_KEY! );
-            return payload as { uid: string };
+            return payload as { uid: string, email: string };
         } catch ( error ) {
             throw error;
         }
