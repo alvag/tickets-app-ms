@@ -27,15 +27,14 @@ const userSchema = new Schema( {
     },
 }, {
     versionKey: false,
+    toJSON: {
+        transform( doc, ret ) {
+            ret.id = ret._id;
+            delete ret.password;
+            delete ret._id;
+        },
+    },
 } );
-
-userSchema.methods.toJSON = function () {
-    const user = this.toObject();
-    user.uid = user._id;
-    delete user.password;
-    delete user._id;
-    return user;
-};
 
 userSchema.statics.build = ( attrs: UserAttrs ) => {
     return new User( attrs );
