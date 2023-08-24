@@ -7,8 +7,8 @@ export const currentUser = ( req: Request, res: Response, next: NextFunction ) =
             return next();
         }
 
-        const { uid, email } = Jwt.verify( req?.session?.jwt );
-        req.user = { uid, email };
+        const { id, email } = Jwt.verify( req?.session?.jwt );
+        req.user = { id, email };
     } catch ( error ) {
     }
 

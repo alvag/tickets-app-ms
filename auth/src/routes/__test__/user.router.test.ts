@@ -184,3 +184,27 @@ describe( 'signOut tests', () => {
         expect( response.get( 'Set-Cookie' )[ 0 ] ).toEqual( 'session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; httponly' );
     } );
 } );
+
+describe( 'getCurrentUser tests', () => {
+    it( 'returns user details when user is signed in', async () => {
+        const cookie = await global.signin();
+
+        const response = await request( app )
+            .get( '/api/users/me' )
+            .set( 'Cookie', cookie )
+            .send()
+            .expect( 200 );
+
+        expect( response.body.user.email ).toEqual( 'test@test.com' );
+        expect( response.body.user.id ).toBeDefined();
+    } );
+
+    it( 'returns null when user is not signed in', async () => {
+        const response = await request( app )
+            .get( '/api/users/me' )
+            .send()
+            .expect( 200 );
+
+        expect( response.body.user ).toBeNull();
+    } );
+} );

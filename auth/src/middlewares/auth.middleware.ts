@@ -8,8 +8,8 @@ export const isAuth = ( req: Request, res: Response, next: NextFunction ) => {
             throw new UnauthorizedError();
         }
 
-        const { uid, email } = Jwt.verify( req?.session?.jwt );
-        req.user = { uid, email };
+        const { id, email } = Jwt.verify( req?.session?.jwt );
+        req.user = { id, email };
         next();
     } catch ( error ) {
         next( error );
