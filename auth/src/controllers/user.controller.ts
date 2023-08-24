@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { User } from '../models';
 import { Jwt, Password } from '../helpers';
-import { BadRequestError } from '../errors';
+import { BadRequestError, InternalServerError } from '../errors';
 
 
 export const getCurrentUser = async ( req: Request, res: Response, next: NextFunction ) => {
@@ -66,9 +66,13 @@ export const signIn = async ( req: Request, res: Response, next: NextFunction ) 
 };
 
 export const signOut = async ( req: Request, res: Response ) => {
-    res.json( {
-        message: 'signOut',
-    } );
+    try {
+        req.session = null;
+
+        res.json( { message: 'Sign out successfully' } );
+    } catch ( error ) {
+        throw new InternalServerError();
+    }
 };
 
 
