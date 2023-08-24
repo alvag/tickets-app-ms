@@ -1,7 +1,6 @@
-import { CustomError, ValidationErrorInterface } from './custom-error';
+import { CustomError } from './custom-error';
 
 export class InternalServerError extends CustomError {
-    errors?: ValidationErrorInterface[] | undefined;
     statusCode = 500;
 
     constructor() {
@@ -9,7 +8,4 @@ export class InternalServerError extends CustomError {
         Object.setPrototypeOf( this, InternalServerError.prototype );
     }
 
-    serializeErrors() {
-        return [ { message: this.message } ];
-    }
 }

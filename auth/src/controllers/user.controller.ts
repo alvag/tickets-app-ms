@@ -6,13 +6,7 @@ import { BadRequestError, InternalServerError } from '../errors';
 
 export const getCurrentUser = async ( req: Request, res: Response, next: NextFunction ) => {
     try {
-        if ( !req.session?.jwt ) {
-            return res.send( { currentUser: null } );
-        }
-
-        const { uid, email } = Jwt.verify( req.session.jwt );
-
-        res.json( { currentUser: { uid, email } } );
+        res.json( { user: req.user || null } );
     } catch ( e ) {
         next( e );
     }

@@ -1,7 +1,6 @@
-import { CustomError, ValidationErrorInterface } from './custom-error';
+import { CustomError } from './custom-error';
 
 export class DatabaseConnectionError extends CustomError {
-    errors?: ValidationErrorInterface[] | undefined;
 
     constructor(
         public message = 'Error connecting to database',
@@ -9,10 +8,6 @@ export class DatabaseConnectionError extends CustomError {
         super( message );
 
         Object.setPrototypeOf( this, DatabaseConnectionError.prototype );
-    }
-
-    serializeErrors(): ValidationErrorInterface[] {
-        return [];
     }
 
 }

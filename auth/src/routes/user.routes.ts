@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { getCurrentUser, signIn, signOut, signUp } from '../controllers/user.controller';
 import { body } from 'express-validator';
-import { validateRequest } from '../middlewares';
+import { currentUser, validateRequest } from '../middlewares';
 
 const router = Router();
 
-router.get( '/me', getCurrentUser );
+router.get( '/me', [ currentUser ], getCurrentUser );
 
 router.post( '/signup', [
         body( 'email' ).isEmail().withMessage( 'Email must be valid' ),
